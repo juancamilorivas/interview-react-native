@@ -5,11 +5,9 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 //https://randomuser.me/api/?page=${currentPage}&results=10
 //https://randomuser.me/api/?page=3&results=10
@@ -19,13 +17,20 @@ const App = () => {
   const [currentpage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
+
+
+
+
   const getUsers = () => {
     setIsLoading(true);
-    axios.get(`https://randomuser.me/api/?page=${currentpage}&results=10`).then((res) => {
-      setUsers([...users, ...res.data.results]);
-      setIsLoading(false);
-    });
+    fetch(`https://randomuser.me/api/?page=${currentpage}&results=10`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers([...users, ...data.results]);
+        setIsLoading(false);
+      });
   };
+
 
   const renderItem = ({ item }) => {
     return (
@@ -60,7 +65,7 @@ const App = () => {
   }, [currentpage]);
 
   return (
-    <>
+    <SafeAreaView>
       <FlatList
         data={users}
         renderItem={renderItem}
@@ -69,7 +74,7 @@ const App = () => {
         onEndReached={loadMoreItem}
         onEndReachedThreshold={0}
       />
-    </>
+    </SafeAreaView>
   );
 };
 
